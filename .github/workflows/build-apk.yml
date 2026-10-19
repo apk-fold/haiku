@@ -1,0 +1,116 @@
+name: Compiler l'APK Haiku
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['haiku.apk', 'README.md', 'docs/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk
+  cancel-in-progress: false
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Dépendances
+        run: |
+          mkdir -p /tmp/logs
+          set -o pipefail
+          npm install --no-audit --no-fund 2>&1 | tee /tmp/logs/npm.log
+
+      - name: Tests du cœur (chiffrement, imports, exports, 2FA…)
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee /tmp/logs/tests.log
+
+      - name: Projet Android
+        run: |
+          set -o pipefail
+          if [ ! -d android ]; then npx cap add android 2>&1 | tee /tmp/logs/cap-add.log; echo "NEW_ANDROID=1" >> $GITHUB_ENV; fi
+
+      - name: Build web + synchronisation Android
+        run: |
+          set -o pipefail
+          npm run sync 2>&1 | tee /tmp/logs/sync.log
+
+      - name: Compiler l'APK
+        working-directory: android
+        env:
+          HAIKU_KEYSTORE_PASSWORD: ${{ secrets.HAIKU_KEYSTORE_PASSWORD }}
+          HAIKU_KEY_PASSWORD: ${{ secrets.HAIKU_KEY_PASSWORD }}
+        run: |
+          set -o pipefail
+          if [ -n "${{ secrets.HAIKU_KEYSTORE_B64 }}" ]; then echo "${{ secrets.HAIKU_KEYSTORE_B64 }}" | base64 -d > /tmp/haiku.jks; echo "HAIKU_KEYSTORE_PATH=/tmp/haiku.jks" >> $GITHUB_ENV; export HAIKU_KEYSTORE_PATH=/tmp/haiku.jks; fi
+          [ -z "$HAIKU_KEYSTORE_PASSWORD" ] && unset HAIKU_KEYSTORE_PASSWORD
+          [ -z "$HAIKU_KEY_PASSWORD" ] && unset HAIKU_KEY_PASSWORD
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee /tmp/logs/gradle.log
+
+      - name: Captures d'écran de l'interface
+        continue-on-error: true
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@^1.56.0 > /tmp/logs/playwright-install.log 2>&1
+          npx playwright install --with-deps chromium >> /tmp/logs/playwright-install.log 2>&1
+          (npx vite preview --port 4173 --strictPort > /tmp/logs/preview.log 2>&1 &)
+          sleep 4
+          node tests/ui-smoke.mjs http://localhost:4173/ /tmp/logs/shots 2>&1 | tee /tmp/logs/ui-smoke.log
+
+      - name: Journal de compilation (branche ci-log)
+        if: always()
+        run: |
+          cd /tmp/logs
+          tail -n 400 gradle.log > gradle-tail.log 2>/dev/null || true
+          git init -q && git checkout -q -b ci-log
+          git config user.name github-actions && git config user.email actions@users.noreply.github.com
+          echo "build ${{ github.run_number }} — ${GITHUB_SHA::7}" > BUILD.txt
+          git add -A && git commit -qm "log build ${{ github.run_number }}" || true
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-log || true
+
+      - name: Récupérer l'APK
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk haiku.apk
+          sha256sum haiku.apk | tee haiku.sha256
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: haiku-apk
+          path: haiku.apk
+
+      - name: Publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" haiku.apk --title "Haiku – build ${{ github.run_number }}" --notes "APK compilé automatiquement (${GITHUB_SHA::7}). SHA-256 : $(cut -d' ' -f1 haiku.sha256)" --latest
+
+      - name: Enregistrer l'APK dans le dépôt
+        run: |
+          cp haiku.apk /tmp/haiku.apk
+          cp package-lock.json /tmp/package-lock.json
+          [ "$NEW_ANDROID" = "1" ] && cp -r android /tmp/android-src || true
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin main && git reset -q --hard origin/main
+          cp /tmp/haiku.apk haiku.apk
+          [ -f package-lock.json ] || cp /tmp/package-lock.json package-lock.json
+          if [ "$NEW_ANDROID" = "1" ] && [ ! -d android ]; then cp -r /tmp/android-src android; fi
+          git add -f haiku.apk
+          git add package-lock.json android 2>/dev/null || true
+          git commit -m "APK Haiku (build ${{ github.run_number }}) [skip ci]" || exit 0
+          git push origin HEAD:main

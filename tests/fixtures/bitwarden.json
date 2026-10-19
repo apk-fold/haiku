@@ -1,0 +1,83 @@
+{
+  "encrypted": false,
+  "folders": [
+    { "id": "f1b2c3d4-0000-4000-8000-000000000001", "name": "Perso" },
+    { "id": "f1b2c3d4-0000-4000-8000-000000000002", "name": "Travail" }
+  ],
+  "items": [
+    {
+      "passwordHistory": [{ "lastUsedDate": "2025-01-02T10:00:00.000Z", "password": "old-pass" }],
+      "revisionDate": "2025-06-01T12:00:00.000Z",
+      "creationDate": "2024-06-01T12:00:00.000Z",
+      "deletedDate": null,
+      "id": "a0000000-0000-4000-8000-000000000001",
+      "organizationId": null,
+      "folderId": "f1b2c3d4-0000-4000-8000-000000000001",
+      "type": 1,
+      "reprompt": 1,
+      "name": "Google",
+      "notes": "compte principal",
+      "favorite": true,
+      "fields": [
+        { "name": "Question secrète", "value": "chat", "type": 1, "linkedId": null },
+        { "name": "Pro", "value": "true", "type": 2, "linkedId": null }
+      ],
+      "login": {
+        "fido2Credentials": [],
+        "uris": [{ "match": null, "uri": "https://accounts.google.com" }, { "match": 0, "uri": "https://gmail.com" }],
+        "username": "matheo@gmail.com",
+        "password": "G00gle!Pass",
+        "totp": "otpauth://totp/Google:matheo?secret=JBSWY3DPEHPK3PXP&issuer=Google"
+      },
+      "collectionIds": null
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000002",
+      "organizationId": null,
+      "folderId": null,
+      "type": 2,
+      "reprompt": 0,
+      "name": "Code alarme",
+      "notes": "4242",
+      "favorite": false,
+      "secureNote": { "type": 0 },
+      "collectionIds": null
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000003",
+      "organizationId": null,
+      "folderId": "f1b2c3d4-0000-4000-8000-000000000002",
+      "type": 3,
+      "reprompt": 0,
+      "name": "Carte pro",
+      "notes": null,
+      "favorite": false,
+      "card": { "cardholderName": "M ANGST", "brand": "Mastercard", "number": "5555555555554444", "expMonth": "3", "expYear": "2024", "code": "321" },
+      "collectionIds": null
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000004",
+      "organizationId": null,
+      "folderId": null,
+      "type": 4,
+      "reprompt": 0,
+      "name": "Identité",
+      "notes": null,
+      "favorite": false,
+      "identity": { "title": "Mr", "firstName": "Mathéo", "middleName": null, "lastName": "Angst", "address1": "1 rue X", "address2": null, "address3": null, "city": "Hoffen", "state": null, "postalCode": "67250", "country": "FR", "company": null, "email": "m@example.com", "phone": null, "ssn": null, "username": null, "passportNumber": "12AB34567", "licenseNumber": null },
+      "collectionIds": null
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000005",
+      "organizationId": null,
+      "folderId": null,
+      "type": 5,
+      "reprompt": 0,
+      "name": "Clé serveur",
+      "notes": null,
+      "favorite": false,
+      "sshKey": { "privateKey": "-----BEGIN OPENSSH PRIVATE KEY-----\nabc\n-----END OPENSSH PRIVATE KEY-----", "publicKey": "ssh-ed25519 AAAAC3Nza test", "keyFingerprint": "SHA256:xyz" },
+      "collectionIds": null
+    }
+  ]
+}

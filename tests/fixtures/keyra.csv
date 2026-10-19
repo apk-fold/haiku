@@ -1,0 +1,8 @@
+type,name,url,username,email,password,notes,category,favorite,extra,tags
+wifi,Box maison,,,,wifi-key-999,,,0,"{""ssid"": ""Livebox-1234"", ""security"": ""WPA2""}",
+login,GitHub,https://github.com,matheo,m@example.com,gh-Secret-42!,"Compte pro
+ligne 2",Work,1,,"dev, École"
+identity,Moi,,,moi@example.com,,,,0,"{""full_name"": ""Mathéo Angst"", ""birth_date"": ""2000-01-01"", ""phone"": ""0600000000"", ""address"": ""1 rue X, Hoffen"", ""id_number"": ""ID123""}",
+secure_note,Note secrète,,,,,Code du portail : 1234,,0,,
+server,Proxmox,https://pve.local:8006,root,,pve-pass,,,0,"{""hostname"": ""192.168.1.10"", ""port"": ""22"", ""protocol"": ""SSH""}",
+card,Visa perso,,,,,,,0,"{""cardholder"": ""Mathéo A"", ""card_number"": ""4111111111111111"", ""expiry"": ""08/27"", ""cvv"": ""123"", ""pin"": ""0000""}",

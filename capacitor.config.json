@@ -1,0 +1,16 @@
+{
+  "appId": "fr.apkfold.haiku",
+  "appName": "Haiku",
+  "webDir": "dist",
+  "backgroundColor": "#07050d",
+  "android": {
+    "backgroundColor": "#07050d",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": false
+    }
+  }
+}

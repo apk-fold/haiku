@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr" data-mode="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#07050d">
+  <meta name="color-scheme" content="dark light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob: mediastream:; connect-src 'self' https://api.pwnedpasswords.com https://api.2fa.directory; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Haiku</title>
+</head>
+<body class="locked">
+  <div id="app">
+    <div id="bg" aria-hidden="true">
+      <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <canvas id="bg-canvas"></canvas>
+      <div class="grain"></div>
+    </div>
+
+    <div id="shell" hidden>
+      <aside id="rail">
+        <div class="brand"><span class="hanko small">俳句</span><b>HAIKU</b></div>
+        <nav id="rail-nav"></nav>
+      </aside>
+      <div id="main">
+        <header id="top">
+          <button id="back" class="ic-btn tap" hidden aria-label="Retour"></button>
+          <div class="top-title"></div>
+          <div class="top-actions"></div>
+        </header>
+        <div id="panes">
+          <main id="page" tabindex="-1"></main>
+          <section id="aside" aria-label="Détail"></section>
+        </div>
+      </div>
+      <nav id="tabs"></nav>
+      <button id="fab" class="tap" aria-label="Nouvel élément"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+
+    <div id="lock" hidden></div>
+    <div id="overlays"></div>
+    <div id="palette"></div>
+    <div id="fx-layer" aria-hidden="true"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="intro"></div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
