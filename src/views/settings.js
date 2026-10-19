@@ -9,7 +9,7 @@ import { prefs, vaultPrefs, MODULES } from '../prefs.js';
 import { session } from '../session.js';
 import { prompt, confirm, toast, toastError, menu, switchHtml, sheet } from '../ui/components.js';
 import { showRecoveryKey, createVaultFlow, KDF_LEVELS } from '../ui/lock.js';
-import { biometric, setSecureScreen, isNative, appInfo } from '../platform.js';
+import { biometric, setSecureScreen, isNative, appInfo, autofill } from '../platform.js';
 import { checkKdf } from '../core/crypto.js';
 
 const LOCK_OPTS = [[0, 'Immédiatement'], [60, '1 minute'], [300, '5 minutes'], [900, '15 minutes'], [1800, '30 minutes'], [3600, '1 heure'], [14400, '4 heures'], [-1, 'Jamais']];
@@ -20,6 +20,7 @@ export async function render(ctx) {
   const v = ctx.vault;
   const info = await appInfo();
   const bio = await biometric.status();
+  let af = await autofill.status();
 
   const draw = () => {
     const vp = vaultPrefs.get(v.id);
@@ -39,6 +40,10 @@ export async function render(ctx) {
         <label class="row-switch"><span>Biométrie<small>${isNative ? (bio.available ? 'Empreinte ou visage (clé protégée par Android Keystore)' : esc(bio.reason || 'Indisponible sur ce téléphone')) : 'Dans l\'appli Android uniquement'}</small></span>${switchHtml('bio', !!vp.bio && isNative)}</label>
         <label class="row-switch"><span>Code PIN<small>${pinEnv ? `${pinEnv.length} chiffres${pinEnv.persistent ? '' : ' · redemande le mot de passe au redémarrage'}` : 'Plus rapide que le mot de passe maître'}</small></span>${switchHtml('pin', !!pinEnv)}</label>
         ${pinEnv ? `<label class="slider-row"><span>Essais avant désactivation</span><b data-out="att">${s.maxPinAttempts}</b><input type="range" name="att" min="3" max="10" value="${s.maxPinAttempts}"></label>` : ''}
+      </section>
+      <section class="set-group glass" data-in><h3>${icon('zap', 16)}Remplissage automatique</h3>
+        ${row('autofill', 'zap', 'Service de remplissage', isNative ? (af.enabled ? 'Un service est actif · touche pour choisir Haiku' : 'Désactivé · touche pour choisir Haiku') : 'Dans l\'appli Android uniquement', af.enabled ? '' : 'warn')}
+        <p class="muted small" style="padding:0 8px 10px 0">Dans les applis et les navigateurs, touche un champ puis « Remplir avec Haiku ». Après une connexion, Android propose d'enregistrer l'identifiant dans Haiku. Chrome : Paramètres › Remplissage automatique › « Utiliser un autre service ».</p>
       </section>
       <section class="set-group glass" data-in><h3>${icon('timer', 16)}Verrouillage automatique</h3>
         ${row('lockAfter', 'hourglass', 'Après', esc(LOCK_OPTS.find(([x]) => x === s.lockAfter)?.[1] || ''))}
@@ -189,6 +194,11 @@ export async function render(ctx) {
       if (a === 'trashDays') {
         const x = await menu(TRASH_OPTS.map(([val, l]) => ({ icon: val === prefs.s.trashDays ? 'circle-check' : 'trash-2', label: l, value: String(val) })), { title: 'Purger la corbeille après' });
         if (x != null) { prefs.set('security', { trashDays: +x }); draw(); }
+      }
+      if (a === 'autofill') {
+        if (!isNative) return toast('Disponible dans l\'appli Android', { icon: 'info' });
+        await autofill.settings();
+        setTimeout(async () => { af = await autofill.status(); draw(); }, 1500);
       }
       if (a === 'locknow') session.lock('manual');
       if (a === 'newvault') createVaultFlow();

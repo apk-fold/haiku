@@ -220,6 +220,7 @@ body.selecting #fab { display: none; }
   #tabs { display: none; }
   #fab { bottom: calc(var(--safe-bottom) + 28px); }
   #page { padding-bottom: 110px; }
+  body:not(.split) .view { max-width: 1040px; margin: 0 auto; width: 100%; }
   body.split #page { flex: 0 0 min(46%, 520px); border-right: 1px solid var(--line); }
   #aside.open { display: flex; flex-direction: column; flex: 1; min-width: 0; }
   .aside-head { display: flex; align-items: center; gap: 6px; padding: 10px 8px 6px 12px; }
@@ -245,7 +246,7 @@ body.selecting #fab { display: none; }
 .sw-right { color: #facc15; }
 .row-wrap.sw-copy .swipe-bg { background: rgba(var(--accent-rgb), 0.16); }
 .row-wrap.sw-fav .swipe-bg { background: rgba(250, 204, 21, 0.14); }
-.row { position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 6px 10px 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); min-height: 66px; touch-action: pan-y; }
+.row { position: relative; display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; padding: 10px 6px 10px 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); min-height: 66px; touch-action: pan-y; }
 .row.sel { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.12); }
 .row-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .row-txt b { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -401,12 +402,12 @@ details.hist summary b { margin-left: auto; color: var(--faint); font-size: 12px
 
 /* carte bancaire 3D */
 .ccard-wrap { perspective: 1100px; padding: 6px 0; cursor: pointer; }
-.ccard { position: relative; width: min(100%, 400px); margin: 0 auto; aspect-ratio: 1.586; transform-style: preserve-3d; }
+.ccard { position: relative; width: min(100%, 400px); margin: 0 auto; aspect-ratio: 1.586; transform-style: preserve-3d; container-type: inline-size; }
 .ccard-face { position: absolute; inset: 0; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; color: #fff; background: radial-gradient(120% 140% at 0% 0%, hsl(var(--h) 85% 60%), transparent 60%), radial-gradient(120% 120% at 100% 100%, hsl(calc(var(--h) + 60) 80% 45%), transparent 60%), linear-gradient(135deg, hsl(var(--h) 60% 22%), hsl(calc(var(--h) + 40) 50% 12%)); box-shadow: 0 30px 60px -25px hsl(var(--h) 80% 40% / 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
 .ccard-face.back { transform: rotateY(180deg); justify-content: flex-start; gap: 20px; padding: 26px 0 22px; }
 .cc-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-display); font-size: 18px; }
 .chip-ic { width: 46px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #f9e7a1, #c8a24a); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2); }
-.cc-num { font-size: clamp(16px, 5.5vw, 22px); letter-spacing: 0.12em; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
+.cc-num { font-size: clamp(13px, 5.6cqw, 22px); white-space: nowrap; letter-spacing: 0.12em; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
 .cc-bottom { display: flex; justify-content: space-between; }
 .cc-bottom div { display: flex; flex-direction: column; }
 .cc-bottom small { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em; }
@@ -797,3 +798,11 @@ body.locked .toast { bottom: calc(var(--safe-bottom) + 30px); }
   .cf-row { grid-template-columns: 1fr 1fr auto; }
   .cf-row .ic-btn[data-cf-type] { display: none; }
 }
+
+/* mode remplissage automatique (ouvert depuis une autre appli) */
+body.autofill-mode #tabs, body.autofill-mode #fab, body.autofill-mode #rail { display: none !important; }
+body.autofill-mode #page { padding-bottom: 40px; }
+.af-target { display: flex; align-items: center; gap: 10px; padding: 12px 14px; color: var(--accent); }
+.af-target b { color: var(--text); font-size: 15px; }
+.af-target small { color: var(--muted); display: block; font-size: 12.5px; }
+.lock-af { text-align: center; color: var(--accent); font-size: 13px; font-weight: 600; display: flex; gap: 6px; justify-content: center; align-items: center; }

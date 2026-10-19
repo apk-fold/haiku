@@ -334,3 +334,36 @@ export async function appInfo() {
   const { App } = await cap();
   try { return await App.getInfo(); } catch { return { version: '?', build: '' }; }
 }
+
+// ---- remplissage automatique (service Autofill Android) -------------------------------------
+
+export const autofill = {
+  async request() {
+    if (!isNative) return null;
+    const { Native } = await cap();
+    try {
+      const r = await Native.autofillRequest();
+      return r && r.mode ? r : null;
+    } catch {
+      return null;
+    }
+  },
+  async complete({ username = '', password = '', label = 'Haiku' }) {
+    const { Native } = await cap();
+    return Native.autofillComplete({ username, password, label });
+  },
+  async cancel() {
+    if (!isNative) return;
+    const { Native } = await cap();
+    await Native.autofillCancel().catch(() => {});
+  },
+  async status() {
+    if (!isNative) return { supported: false, enabled: false };
+    const { Native } = await cap();
+    try { return await Native.autofillStatus(); } catch { return { supported: false, enabled: false }; }
+  },
+  async settings() {
+    const { Native } = await cap();
+    return Native.autofillSettings();
+  },
+};

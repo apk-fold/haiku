@@ -458,10 +458,21 @@ export function dedupKey(it) {
   return [it.type, norm(it.name), d.username || '', (d.uris || [])[0]?.uri || '', d.password || d.number || d.ssid || '', it.type === 'note' ? it.notes : ''].join('\u0001');
 }
 
+// Catégories intégrées de Keyra (selon la langue de Keyra) → dossiers de base de Haiku.
+const FOLDER_ALIASES = {
+  personal: 'personnel', personnel: 'personnel', persoenlich: 'personnel', personale: 'personnel',
+  work: 'travail', travail: 'travail', arbeit: 'travail', lavoro: 'travail', trabajo: 'travail',
+  finance: 'finances', finances: 'finances', finanzen: 'finances', finanze: 'finances', finanzas: 'finances',
+  social: 'reseaux sociaux', 'reseaux sociaux': 'reseaux sociaux', 'soziale netzwerke': 'reseaux sociaux', 'social media': 'reseaux sociaux',
+  email: 'e-mail', 'e-mail': 'e-mail', courriel: 'e-mail', mail: 'e-mail',
+  shopping: 'achats', achats: 'achats', einkaufen: 'achats', acquisti: 'achats', compras: 'achats',
+};
+const folderKey = (name) => { const k = norm(name); return FOLDER_ALIASES[k] || k; };
+
 /** Applique un aperçu au coffre : crée les dossiers manquants, ignore les doublons. */
 export async function applyImport(vault, preview, { createFolders = true, skipDuplicates = true } = {}) {
   const existing = new Set(vault.active.map(dedupKey));
-  const folderIds = new Map(vault.folders.map((f) => [norm(f.name), f.id]));
+  const folderIds = new Map(vault.folders.map((f) => [folderKey(f.name), f.id]));
   const created = [];
   const toAdd = [];
   let duplicates = 0;
@@ -470,7 +481,7 @@ export async function applyImport(vault, preview, { createFolders = true, skipDu
     if (skipDuplicates && existing.has(k)) { duplicates++; continue; }
     existing.add(k);
     if (folder && createFolders) {
-      const fk = norm(folder);
+      const fk = folderKey(folder);
       if (!folderIds.has(fk)) {
         const f = { id: crypto.randomUUID ? crypto.randomUUID() : String(Math.random()), name: folder.slice(0, 60) };
         vault.data.folders.push(f);

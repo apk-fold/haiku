@@ -10,7 +10,7 @@ import { segmented, bindSegmented, switchHtml, copy, toast, toastError, pickFile
 import { shareFile, shareText } from '../platform.js';
 import { prefs } from '../prefs.js';
 
-const EXPIRY = [['0', 'Jamais'], ['1', '1 heure'], ['24', '1 jour'], ['168', '7 jours'], ['720', '30 jours']];
+const EXPIRY = [['0', 'Jamais'], ['1', '1 h'], ['24', '1 jour'], ['168', '7 jours'], ['720', '30 j']];
 
 export async function render(ctx) {
   const v = ctx.vault;

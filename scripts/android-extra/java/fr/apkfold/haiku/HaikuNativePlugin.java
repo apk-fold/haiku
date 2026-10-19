@@ -1,5 +1,6 @@
 package fr.apkfold.haiku;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
@@ -13,7 +14,14 @@ import android.os.PersistableBundle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
+import android.provider.Settings;
+import android.service.autofill.Dataset;
+import android.service.autofill.FillResponse;
 import android.util.Base64;
+import android.view.autofill.AutofillId;
+import android.view.autofill.AutofillManager;
+import android.view.autofill.AutofillValue;
+import android.widget.RemoteViews;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -141,6 +149,100 @@ public class HaikuNativePlugin extends Plugin {
             }
             call.resolve();
         });
+    }
+
+    // ---- remplissage automatique (service Autofill d'Android) -----------------------------------
+
+    @PluginMethod
+    public void autofillStatus(PluginCall call) {
+        JSObject r = new JSObject();
+        if (Build.VERSION.SDK_INT < 26) {
+            r.put("supported", false);
+            r.put("enabled", false);
+            call.resolve(r);
+            return;
+        }
+        AutofillManager am = getContext().getSystemService(AutofillManager.class);
+        r.put("supported", am != null && am.isAutofillSupported());
+        r.put("enabled", am != null && am.hasEnabledAutofillServices());
+        call.resolve(r);
+    }
+
+    @PluginMethod
+    public void autofillSettings(PluginCall call) {
+        if (Build.VERSION.SDK_INT < 26) {
+            call.reject("Android 8 ou plus récent requis");
+            return;
+        }
+        try {
+            Intent i = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+            i.setData(Uri.parse("package:" + getContext().getPackageName()));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+        } catch (Exception e) {
+            Intent i = new Intent(Settings.ACTION_SETTINGS);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+        }
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void autofillRequest(PluginCall call) {
+        Activity act = getActivity();
+        if (act instanceof AutofillActivity && AutofillActivity.pending != null) call.resolve(AutofillActivity.pending);
+        else call.resolve(new JSObject());
+    }
+
+    @PluginMethod
+    @SuppressWarnings("deprecation")
+    public void autofillComplete(PluginCall call) {
+        final String user = call.getString("username", "");
+        final String pass = call.getString("password", "");
+        final String label = call.getString("label", "Haiku");
+        final Activity act = getActivity();
+        if (!(act instanceof AutofillActivity) || Build.VERSION.SDK_INT < 26) {
+            call.reject("Pas de demande de remplissage en cours");
+            return;
+        }
+        act.runOnUiThread(() -> {
+            try {
+                RemoteViews rv = new RemoteViews(act.getPackageName(), R.layout.haiku_autofill_item);
+                rv.setTextViewText(R.id.haiku_af_text, label);
+                Dataset.Builder db = new Dataset.Builder(rv);
+                int n = 0;
+                if (user != null && !user.isEmpty()) {
+                    for (AutofillId id : AutofillActivity.userIds) { db.setValue(id, AutofillValue.forText(user)); n++; }
+                }
+                if (pass != null && !pass.isEmpty()) {
+                    for (AutofillId id : AutofillActivity.passIds) { db.setValue(id, AutofillValue.forText(pass)); n++; }
+                }
+                if (n == 0) {
+                    call.reject("Aucun champ à remplir");
+                    return;
+                }
+                FillResponse resp = new FillResponse.Builder().addDataset(db.build()).build();
+                Intent reply = new Intent();
+                reply.putExtra(AutofillManager.EXTRA_AUTHENTICATION_RESULT, resp);
+                act.setResult(Activity.RESULT_OK, reply);
+                call.resolve();
+                act.finish();
+            } catch (Exception e) {
+                call.reject("Remplissage impossible : " + e.getMessage());
+            }
+        });
+    }
+
+    @PluginMethod
+    public void autofillCancel(PluginCall call) {
+        final Activity act = getActivity();
+        if (act instanceof AutofillActivity) {
+            act.runOnUiThread(() -> {
+                act.setResult(Activity.RESULT_CANCELED);
+                act.finish();
+            });
+        }
+        call.resolve();
     }
 
     // ---- biométrie ---------------------------------------------------------------------------

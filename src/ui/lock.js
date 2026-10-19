@@ -50,6 +50,7 @@ export function renderLock(reason) {
     <div class="lock-art ${art}">${art !== 'minimal' ? ENSO : ''}</div>
     <div class="lock-brand"><h1 class="wordmark">HAIKU</h1>${art === 'haiku' || art === 'enso' ? `<p class="lock-poem">${poem.map((l) => `<span>${esc(l)}</span>`).join('')}</p>` : ''}</div>
     <div class="lock-card glass">
+      ${window.__haikuAutofill ? `<p class="lock-af">${icon('zap', 14)}Remplir dans ${esc(window.__haikuAutofill.webDomain || window.__haikuAutofill.packageName || 'une appli')}</p>` : ''}
       <button class="vault-pick tap" data-act="pick">${icon('lock', 16)}<span>${esc(v.name)}</span>${vaults.length > 1 ? icon('chevron-down', 16) : ''}</button>
       <div class="lock-mode"></div>
       <p class="err" role="alert"></p>

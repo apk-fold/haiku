@@ -9,7 +9,7 @@ import { menu, prompt, toast, closeTopSheet, sheetsOpen, sheet, monogram } from 
 import { TYPES, TYPE_ORDER, subtitle } from './core/schema.js';
 import { matches } from './core/tags.js';
 import { esc, norm } from './core/util.js';
-import { haptic, exitApp } from './platform.js';
+import { haptic, exitApp, autofill } from './platform.js';
 
 const views = {
   home: () => import('./views/home.js'),
@@ -28,6 +28,7 @@ const views = {
   settings: () => import('./views/settings.js'),
   studio: () => import('./views/studio.js'),
   modules: () => import('./views/modules.js'),
+  autofill: () => import('./views/autofill.js'),
 };
 
 // route → [vue, onglet parent, peut aller dans le volet de droite (écran large / Fold déplié)]
@@ -49,6 +50,7 @@ const ROUTES = [
   [/^#\/settings$/, 'settings', 'settings'],
   [/^#\/studio$/, 'studio', 'studio'],
   [/^#\/modules$/, 'modules', 'modules'],
+  [/^#\/autofill$/, 'autofill', ''],
 ];
 
 let current = { view: null, cleanup: null, hash: '', tab: '' };
@@ -310,6 +312,7 @@ export async function newItemMenu(from) {
 export function handleBack() {
   if ($('#palette.open')) return closePalette();
   if (closeTopSheet()) return;
+  if (window.__haikuAutofill && (current.view === 'autofill' || !session.vault)) return autofill.cancel();
   if (asideCurrent.hash) { closeAside(); history.replaceState(null, '', current.hash); return; }
   if (navStack.length > 1 && current.view !== 'home') return app.back();
   if (current.view !== 'home') return app.go('#/home');

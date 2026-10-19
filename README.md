@@ -41,6 +41,15 @@ sauvegarde).
   corbeille), **duplication**, gestes : glisser à droite = copier, à gauche = favori, appui long = menu.
 - **Plusieurs coffres** indépendants, chacun avec son mot de passe.
 
+### Remplissage automatique
+- Haiku est un **service de remplissage Android** (Réglages › Remplissage automatique) : dans une appli ou un
+  navigateur, touche le champ puis « Remplir avec Haiku », déverrouille (biométrie, PIN ou mot de passe) et choisis
+  l'identifiant. Les correspondances suivent les règles de Bitwarden (domaine, hôte, `androidapp://paquet`…), et
+  l'association à une appli peut être mémorisée en un geste.
+- Le code 2FA de l'identifiant est copié automatiquement pour l'étape suivante.
+- Après une connexion, Android propose d'**enregistrer** (ou de mettre à jour) l'identifiant dans Haiku.
+- Chrome : *Paramètres › Remplissage automatique › Utiliser un autre service*.
+
 ### Authentificateur (2FA)
 - Codes **TOTP** (SHA-1/256/512, 6 ou 8 chiffres, période libre), **HOTP** et **Steam Guard**, en direct avec anneau de
   compte à rebours et code suivant.
@@ -125,8 +134,8 @@ DEK ──AES-256-GCM──► contenu du coffre (JSON compressé)
 ## Limites connues
 - Pas de synchronisation ni de partage de coffre entre personnes : c'est un coffre local (comme Keyra). Pour passer
   d'un téléphone à l'autre : sauvegarde `.haiku` ou export chiffré.
-- Pas encore de **remplissage automatique** dans les autres applis (service Autofill Android) : on copie, et le
-  presse-papiers s'efface tout seul.
+- Le remplissage automatique passe par l'écran de Haiku (pas de suggestions en ligne dans le clavier) : un toucher
+  de plus, mais aucun secret n'est jamais conservé en clair pour le système.
 - Les fichiers `.kdbx` ne sont pas lus directement : exporte-les en CSV ou XML depuis KeePassXC / KeePass.
 - L'estimation de robustesse est hors ligne et approximative.
 
@@ -146,7 +155,7 @@ l'autre.
 src/core/      chiffrement, coffre, importeurs/exporteurs, TOTP, générateur, robustesse, audit, Send, SSH
 src/views/     écrans (accueil, coffre, fiche, édition, 2FA, générateur, santé, Send, Studio, modules…)
 src/ui/        effets GSAP, fonds animés, thème, composants, écran de verrouillage
-scripts/       réglages du projet Android, plugin natif Java (biométrie Keystore, écran sécurisé), icônes
+scripts/       réglages du projet Android, plugin natif Java (biométrie Keystore, écran sécurisé, remplissage automatique), icônes
 tests/         tests Node (avec un vrai export de Keyra) et test d'interface Playwright
 ```
 

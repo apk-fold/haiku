@@ -267,3 +267,31 @@ test('Send : page autonome', async () => {
   assert.match(html, /HAIKU · SEND/);
   assert.ok(!html.includes('abc"'));
 });
+
+test('remplissage automatique : correspondance des adresses (règles Bitwarden)', async () => {
+  const { uriMatches, findLogins, appLabel } = await import('../src/core/match.js');
+  const t = { webDomain: 'accounts.google.com' };
+  assert.ok(uriMatches({ uri: 'https://mail.google.com/x' }, t));
+  assert.ok(!uriMatches({ uri: 'https://google.fr' }, t));
+  assert.ok(uriMatches({ uri: 'https://accounts.google.com', match: 'host' }, t));
+  assert.ok(!uriMatches({ uri: 'https://mail.google.com', match: 'host' }, t));
+  assert.ok(!uriMatches({ uri: 'https://google.com', match: 'never' }, t));
+  assert.ok(uriMatches({ uri: 'androidapp://com.instagram.android' }, { packageName: 'com.instagram.android' }));
+  assert.ok(uriMatches({ uri: 'https://www.amazon.co.uk' }, { webDomain: 'amazon.co.uk' }));
+  assert.ok(uriMatches({ uri: '^https://.*\\.example\\.com', match: 'regex' }, { webDomain: 'a.example.com' }));
+  const items = [
+    { id: '1', type: 'login', data: { uris: [{ uri: 'https://github.com' }] } },
+    { id: '2', type: 'login', favorite: true, data: { uris: [{ uri: 'github.com' }] } },
+    { id: '3', type: 'login', deletedAt: 'x', data: { uris: [{ uri: 'https://github.com' }] } },
+  ];
+  assert.deepEqual(findLogins(items, { webDomain: 'github.com' }).map((i) => i.id), ['2', '1']);
+  assert.equal(appLabel('com.instagram.android'), 'Instagram');
+});
+
+test('import Keyra : catégories intégrées rangées dans les dossiers de base', async () => {
+  const v = await Vault.create({ name: 'K', password: 'motdepasse-1', kdf: FAST });
+  const r = await applyImport(v, await parseImport(fx('keyra-export.mcfexport'), { password: 'export-pass-123' }));
+  assert.equal(r.foldersCreated.length, 0);
+  const gh = v.active.find((i) => i.name === 'GitHub');
+  assert.equal(v.folderName(gh.folderId), 'Travail');
+});

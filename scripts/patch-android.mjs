@@ -47,6 +47,31 @@ if (!x.includes('android:allowBackup')) x = x.replace('<application', '<applicat
 if (!x.includes('android:fullBackupContent')) x = x.replace('<application', '<application\n        android:fullBackupContent="false"');
 if (!x.includes('requestLegacyExternalStorage')) x = x.replace('<application', '<application\n        android:requestLegacyExternalStorage="true"');
 if (!x.includes('windowSoftInputMode')) x = x.replace(/(<activity[^>]*android:name="\.MainActivity")/, '$1\n            android:windowSoftInputMode="adjustResize"');
+if (!x.includes('.HaikuAutofillService')) {
+  x = x.replace(/(\n\s*<\/application>)/, `
+
+        <!-- remplissage automatique : service Android + écran de déverrouillage dédié -->
+        <service
+            android:name=".HaikuAutofillService"
+            android:label="Haiku"
+            android:exported="true"
+            android:permission="android.permission.BIND_AUTOFILL_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.autofill.AutofillService" />
+            </intent-filter>
+            <meta-data android:name="android.autofill" android:resource="@xml/haiku_autofill" />
+        </service>
+        <activity
+            android:name=".AutofillActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity="fr.apkfold.haiku.autofill"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density" />$1`);
+  log('Manifest : service de remplissage automatique déclaré.');
+}
 writeFileSync(manifestPath, x);
 log('Manifest : sauvegarde Android désactivée, clavier en adjustResize.');
 

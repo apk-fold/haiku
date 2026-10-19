@@ -8,7 +8,7 @@ import { prefs } from './prefs.js';
 import { session } from './session.js';
 import { renderLock, hideLock, setUnlockHandler } from './ui/lock.js';
 import { buildShell, resetShell, handleBack, openPalette, app, newItemMenu } from './app.js';
-import { onLifecycle, setSecureScreen, isNative } from './platform.js';
+import { onLifecycle, setSecureScreen, isNative, autofill } from './platform.js';
 import { loadDictionary } from './core/strength.js';
 
 export async function playIntro(replay = false) {
@@ -54,9 +54,17 @@ async function boot() {
   shortcuts();
   loadDictionary();
 
+  // Ouvert par le système pour remplir un formulaire d'une autre appli ?
+  const afReq = await autofill.request();
+  if (afReq) {
+    window.__haikuAutofill = afReq;
+    document.body.classList.add('autofill-mode');
+  }
+
   setUnlockHandler(() => {
     hideLock();
-    if (!location.hash || location.hash === '#' || location.hash === '#/') history.replaceState(null, '', '#/home');
+    if (window.__haikuAutofill) history.replaceState(null, '', '#/autofill');
+    else if (!location.hash || location.hash === '#' || location.hash === '#/' || location.hash === '#/autofill') history.replaceState(null, '', '#/home');
     buildShell();
   });
   session.on((ev, data) => {
@@ -67,7 +75,7 @@ async function boot() {
   });
 
   await session.refresh();
-  if (prefs.a.intro) await playIntro();
+  if (prefs.a.intro && !afReq) await playIntro();
   else document.getElementById('intro').hidden = true;
   renderLock('boot');
 }
