@@ -55,25 +55,40 @@ async function idbOp(mode, fn) {
 
 // ---- fichiers privés de l'appli (coffres) ------------------------------------------------
 
+const writeQueue = new Map(); // une écriture à la fois par fichier
+
+async function nativeRead(path) {
+  const { Filesystem, Directory, Encoding } = await cap();
+  try {
+    const r = await Filesystem.readFile({ path, directory: Directory.Data, encoding: Encoding.UTF8 });
+    return r.data;
+  } catch {
+    return null;
+  }
+}
+
 export const files = {
   async read(path) {
     if (!isNative) return idbOp('readonly', (s) => s.get(path)).then((v) => v ?? null);
-    const { Filesystem, Directory, Encoding } = await cap();
-    try {
-      const r = await Filesystem.readFile({ path, directory: Directory.Data, encoding: Encoding.UTF8 });
-      return r.data;
-    } catch {
-      return null;
-    }
+    await writeQueue.get(path);
+    // Si l'appli a été tuée entre la suppression et le renommage, la copie temporaire est complète.
+    return (await nativeRead(path)) ?? (await nativeRead(`${path}.tmp`));
   },
-  async write(path, text) {
+  write(path, text) {
     if (!isNative) return idbOp('readwrite', (s) => s.put(text, path));
-    const { Filesystem, Directory, Encoding } = await cap();
-    // Écriture atomique : fichier temporaire puis renommage.
-    const tmp = `${path}.tmp`;
-    await Filesystem.writeFile({ path: tmp, data: text, directory: Directory.Data, encoding: Encoding.UTF8, recursive: true });
-    try { await Filesystem.deleteFile({ path, directory: Directory.Data }); } catch { /* absent */ }
-    await Filesystem.rename({ from: tmp, to: path, directory: Directory.Data, toDirectory: Directory.Data });
+    const run = async () => {
+      const { Filesystem, Directory, Encoding } = await cap();
+      // Écriture sûre : fichier temporaire complet, puis remplacement.
+      const tmp = `${path}.tmp`;
+      await Filesystem.writeFile({ path: tmp, data: text, directory: Directory.Data, encoding: Encoding.UTF8, recursive: true });
+      try { await Filesystem.deleteFile({ path, directory: Directory.Data }); } catch { /* absent */ }
+      await Filesystem.rename({ from: tmp, to: path, directory: Directory.Data, toDirectory: Directory.Data });
+    };
+    const prev = writeQueue.get(path) || Promise.resolve();
+    const next = prev.catch(() => {}).then(run);
+    writeQueue.set(path, next);
+    next.finally(() => { if (writeQueue.get(path) === next) writeQueue.delete(path); });
+    return next;
   },
   async remove(path) {
     if (!isNative) return idbOp('readwrite', (s) => s.delete(path));
@@ -88,7 +103,11 @@ export const files = {
     const { Filesystem, Directory } = await cap();
     try {
       const r = await Filesystem.readdir({ path: dir, directory: Directory.Data });
-      return r.files.map((f) => (typeof f === 'string' ? f : f.name));
+      const names = r.files.map((f) => (typeof f === 'string' ? f : f.name));
+      // Copie temporaire orpheline (écriture interrompue) : on la compte comme le fichier.
+      const out = names.filter((n) => !n.endsWith('.tmp'));
+      for (const n of names) if (n.endsWith('.tmp') && !out.includes(n.slice(0, -4))) out.push(n.slice(0, -4));
+      return out;
     } catch {
       return [];
     }

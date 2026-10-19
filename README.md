@@ -133,8 +133,10 @@ DEK ──AES-256-GCM──► contenu du coffre (JSON compressé)
   (Ctrl+N, Ctrl+L, Ctrl+G, Ctrl+F, Ctrl+,).
 
 ## Limites connues
-- Pas de synchronisation ni de partage de coffre entre personnes : c'est un coffre local (comme Keyra). Pour passer
-  d'un téléphone à l'autre : sauvegarde `.haiku` ou export chiffré.
+- Pas de synchronisation, d'organisations ni d'accès d'urgence (ce sont des fonctions du serveur Bitwarden) : c'est
+  un coffre local, comme Keyra. Pour passer d'un téléphone à l'autre : sauvegarde `.haiku` ou export chiffré.
+- Les clés d'accès (passkeys) d'un export Bitwarden ne sont pas importées : Haiku n'est pas un fournisseur de passkeys.
+- Interface en français uniquement (Keyra en propose 17 langues).
 - Le remplissage automatique passe par l'écran de Haiku (pas de suggestions en ligne dans le clavier) : un toucher
   de plus, mais aucun secret n'est jamais conservé en clair pour le système.
 - Les fichiers `.kdbx` ne sont pas lus directement : exporte-les en CSV ou XML depuis KeePassXC / KeePass.
