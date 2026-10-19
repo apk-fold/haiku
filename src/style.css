@@ -35,8 +35,11 @@
   --font: 'Sora', system-ui, sans-serif;
   --font-display: 'Syne', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* Android (Capacitor) fournit --safe-area-inset-* ; les navigateurs, env(). */
+  --safe-top: max(env(safe-area-inset-top, 0px), var(--safe-area-inset-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--safe-area-inset-bottom, 0px));
+  --safe-left: max(env(safe-area-inset-left, 0px), var(--safe-area-inset-left, 0px));
+  --safe-right: max(env(safe-area-inset-right, 0px), var(--safe-area-inset-right, 0px));
   --header-h: 62px;
   --tabbar-h: 70px;
   --gap: 14px;
@@ -182,7 +185,7 @@ input[type='range']::-moz-range-thumb { width: 22px; height: 22px; border-radius
 
 /* ---------- coquille ---------- */
 #app { position: fixed; inset: 0; }
-#shell { position: absolute; inset: 0; z-index: 1; display: flex; }
+#shell { position: absolute; inset: 0; z-index: 1; display: flex; padding-left: var(--safe-left); padding-right: var(--safe-right); }
 #shell[hidden] { display: none; }
 #main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
 #top { position: relative; z-index: 5; display: flex; align-items: center; gap: 4px; padding: calc(var(--safe-top) + 8px) 8px 8px var(--pad); min-height: calc(var(--header-h) + var(--safe-top)); touch-action: none; }
@@ -491,7 +494,7 @@ details.hist summary b { margin-left: auto; color: var(--faint); font-size: 12px
 .tc-code .code { font-size: 34px; font-weight: 700; letter-spacing: 0.08em; background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .tc-code .ring { width: 44px; height: 44px; }
 .tc-code .ring-bg, .tc-code .ring-fg { stroke-width: 4; }
-.tc-code .sec { position: absolute; right: 16px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; width: 44px; text-align: center; }
+.tc-code .sec { position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: 13px; font-weight: 700; width: 44px; text-align: center; }
 .tc-code { position: relative; }
 .totp-card.low .ring-fg { stroke: var(--danger); }
 .totp-card.low .sec { color: var(--danger); }

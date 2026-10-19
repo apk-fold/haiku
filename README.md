@@ -86,6 +86,7 @@ navigateur avec le mot de passe que tu lui transmets par un autre canal.
 | Chrome / Edge / Brave / Opera, Firefox, Safari / Mots de passe Apple | ✅ | ✅ (CSV navigateur) |
 | LastPass, 1Password, Dashlane, Proton Pass, NordPass (CSV) | ✅ | — |
 | Aegis (JSON en clair), Google Authenticator (QR) | ✅ | ✅ (liens `otpauth://`) |
+| Copie papier (page HTML à imprimer, comme le PDF de Keyra) | — | ✅ |
 
 Aperçu avant import (sans les mots de passe), dossiers créés automatiquement, doublons ignorés, rappel de supprimer
 les fichiers en clair. Les types propres à Haiku (Wi-Fi, serveur) font l'aller-retour par Bitwarden grâce à un champ

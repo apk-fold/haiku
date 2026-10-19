@@ -229,8 +229,11 @@ async function renderMain(hash, r, dir) {
   const fab = $('#fab');
   const wasShown = fab.classList.contains('show');
   fab.classList.toggle('show', showFab);
-  if (showFab && !wasShown) gsap.fromTo(fab, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: fx.d(0.6) || 0.01, ease: 'back.out(2)', delay: fx.d(0.15) });
-  else if (!showFab && wasShown) gsap.to(fab, { scale: 0, rotation: 90, duration: fx.d(0.25) || 0.01, ease: 'power2.in' });
+  if (showFab !== wasShown) {
+    gsap.killTweensOf(fab);
+    if (showFab) gsap.fromTo(fab, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: fx.d(0.6) || 0.01, ease: 'back.out(2)', delay: fx.d(0.15) });
+    else gsap.to(fab, { scale: 0, rotation: 90, duration: fx.d(0.25) || 0.01, ease: 'power2.in' });
+  }
   try {
     const mod = await views[r.view]();
     const ctx = makeCtx(container, r, 'main');

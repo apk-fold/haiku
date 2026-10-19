@@ -12,7 +12,7 @@ import { copy, sheet, segmented, bindSegmented, switchHtml, toast, confirm } fro
 import { haptic } from '../platform.js';
 import { session } from '../session.js';
 
-const MODES = [['password', 'Mot de passe'], ['passphrase', 'Phrase'], ['username', 'Pseudo'], ['pin', 'PIN']];
+const MODES = [['password', 'Aléatoire'], ['passphrase', 'Phrase'], ['username', 'Pseudo'], ['pin', 'PIN']];
 
 function optionsHtml(mode) {
   const g = prefs.g;

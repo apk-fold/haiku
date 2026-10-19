@@ -14,6 +14,7 @@ export const EXPORTS = {
   keyra_csv: { label: 'Keyra CSV (en clair)', ext: 'keyra.csv', mime: 'text/csv', encrypted: false, help: 'Le CSV de Keyra, avec étiquettes. Mots de passe EN CLAIR.' },
   browser_csv: { label: 'CSV navigateur (en clair)', ext: 'csv', mime: 'text/csv', encrypted: false, help: 'name,url,username,password,note : s\'importe dans Chrome, Edge, Firefox, Brave, Proton Pass…' },
   otpauth: { label: 'Liens otpauth:// (2FA)', ext: 'otpauth.txt', mime: 'text/plain', encrypted: false, help: "Une ligne par compte de l'authentificateur, à importer dans Aegis, 2FAS, Ente Auth… EN CLAIR." },
+  print: { label: 'Copie papier (page à imprimer)', ext: 'html', mime: 'text/html', encrypted: false, help: 'Comme la copie PDF de Keyra : tous les éléments par dossier, à imprimer depuis un navigateur puis à ranger en lieu sûr. EN CLAIR.' },
 };
 
 const exportable = (vault) => vault.active;
@@ -229,6 +230,34 @@ function otpauthList(vault) {
   }).join('\n') + '\n';
 }
 
+const escHtml = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function printable(vault) {
+  const LABELS = { username: "Nom d'utilisateur", password: 'Mot de passe', totp: 'Clé 2FA', cardholderName: 'Titulaire', number: 'Numéro', brand: 'Réseau', expMonth: 'Mois', expYear: 'Année', code: 'CVV', pin: 'PIN', ssid: 'SSID', security: 'Sécurité', hostname: 'Hôte', port: 'Port', protocol: 'Protocole', firstName: 'Prénom', lastName: 'Nom', email: 'E-mail', phone: 'Téléphone', address1: 'Adresse', city: 'Ville', postalCode: 'Code postal', country: 'Pays', birthDate: 'Naissance', ssn: 'Sécurité sociale', passportNumber: 'Passeport', licenseNumber: 'Permis', idNumber: "Carte d'identité", company: 'Société', publicKey: 'Clé publique', fingerprint: 'Empreinte', passphrase: 'Phrase de passe' };
+  const groups = new Map();
+  for (const it of exportable(vault)) {
+    const f = vault.folderName(it.folderId) || 'Sans dossier';
+    if (!groups.has(f)) groups.set(f, []);
+    groups.get(f).push(it);
+  }
+  const rows = (it) => {
+    const out = [];
+    for (const [k, val] of Object.entries(it.data || {})) {
+      if (k === 'uris') { for (const u of val || []) out.push(['Adresse', u.uri]); continue; }
+      if (k === 'privateKey' || k === 'passwordRevisionDate' || val === '' || val === false || val == null) continue;
+      out.push([LABELS[k] || k, val === true ? 'Oui' : val]);
+    }
+    for (const f of it.fields || []) out.push([f.name, f.value]);
+    if (it.notes) out.push(['Notes', it.notes]);
+    if ((it.tags || []).length) out.push(['Étiquettes', it.tags.map((t) => `#${t}`).join(' ')]);
+    return out.map(([k, v]) => `<tr><th>${escHtml(k)}</th><td>${escHtml(v).replace(/\n/g, '<br>')}</td></tr>`).join('');
+  };
+  const body = [...groups].sort((a, b) => a[0].localeCompare(b[0], 'fr')).map(([f, list]) => `<h2>${escHtml(f)}</h2>${list.sort((a, b) => a.name.localeCompare(b.name, 'fr')).map((it) => `<section><h3>${escHtml(it.name)}</h3><table>${rows(it)}</table></section>`).join('')}`).join('');
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Haiku — ${escHtml(vault.name)}</title>
+<style>body{font:13px/1.45 system-ui,sans-serif;color:#111;max-width:820px;margin:24px auto;padding:0 16px}h1{font-size:22px;margin:0}h2{font-size:16px;border-bottom:2px solid #7c3aed;padding-bottom:4px;margin-top:28px}section{break-inside:avoid;border:1px solid #ddd;border-radius:8px;padding:8px 12px;margin:10px 0}h3{margin:0 0 6px;font-size:14px}table{border-collapse:collapse;width:100%}th{text-align:left;color:#555;font-weight:600;width:34%;vertical-align:top;padding:2px 8px 2px 0}td{font-family:ui-monospace,Menlo,Consolas,monospace;word-break:break-all;padding:2px 0}.warn{background:#fff3cd;border:1px solid #f0c36d;padding:8px 12px;border-radius:8px;margin:12px 0}</style></head>
+<body><h1>Haiku · ${escHtml(vault.name)}</h1><p>Copie papier du ${new Date().toLocaleString('fr-FR')} — ${exportable(vault).length} éléments.</p><p class="warn">Ce document contient tes mots de passe en clair. Imprime-le, range le papier en lieu sûr, puis supprime ce fichier.</p>${body}</body></html>`;
+}
+
 /** Produit le contenu texte d'un export. `password` requis pour les formats chiffrés. */
 export async function buildExport(format, vault, { password, history = true, attachments = true } = {}) {
   const spec = EXPORTS[format];
@@ -243,6 +272,7 @@ export async function buildExport(format, vault, { password, history = true, att
     case 'keyra_csv': return keyraCsv(vault);
     case 'browser_csv': return browserCsv(vault);
     case 'otpauth': return otpauthList(vault);
+    case 'print': return printable(vault);
     default: throw new Error('Format inconnu.');
   }
 }

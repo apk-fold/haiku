@@ -167,7 +167,7 @@ export async function render(ctx) {
     } catch (e) { toastError(e); }
   };
 
-  let form = draw();
+  draw();
 
   // ---- événements ----------------------------------------------------------------------
   ctx.el.addEventListener('submit', (e) => { e.preventDefault(); save(); });
@@ -221,7 +221,7 @@ export async function render(ctx) {
     const keep = { name: it.name, notes: it.notes, tags: it.tags, folderId: it.folderId, favorite: it.favorite, fields: it.fields, attachments: it.attachments, reprompt: it.reprompt };
     it = { ...blankItem(nt), ...keep };
     ctx.header({ title: `Nouveau : ${TYPES[nt].label}`, back: !ctx.inAside, actions: `<button class="ic-btn tap accent" data-act="save" aria-label="Enregistrer">${icon('check')}</button>`, onAction: (a) => a === 'save' && save() });
-    form = draw();
+    draw();
     haptic('select');
   });
   on(ctx.el, 'click', '[data-gen]', (e, b) => {

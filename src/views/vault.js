@@ -3,7 +3,7 @@
 
 import { gsap, fx, Flip, Draggable } from '../ui/fx.js';
 import { icon } from '../ui/icons.js';
-import { on, longPress, $, $$, isWide } from '../ui/dom.js';
+import { on, longPress, $$, isWide } from '../ui/dom.js';
 import { esc, debounce, norm } from '../core/util.js';
 import { prefs } from '../prefs.js';
 import { monogram, copy, menu, toast, emptyState, confirm } from '../ui/components.js';

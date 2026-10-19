@@ -63,6 +63,7 @@ export const session = {
 
   async create(opts) {
     const v = await Vault.create(opts);
+    if (this.vault) { this.vault.lock(); this.vault = null; }
     await files.write(`${DIR}/${v.id}.haiku`, await v.serialize());
     await this.refresh();
     return this.attach(v);

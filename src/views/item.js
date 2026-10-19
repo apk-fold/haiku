@@ -5,7 +5,7 @@ import { gsap, fx } from '../ui/fx.js';
 import { icon } from '../ui/icons.js';
 import { on, longPress } from '../ui/dom.js';
 import { esc, formatDateTime, timeAgo, formatBytes, hostname } from '../core/util.js';
-import { TYPES, subtitle, mainPassword, cardBrand, cardExpired } from '../core/schema.js';
+import { TYPES, subtitle, cardBrand, cardExpired } from '../core/schema.js';
 import { totpCode, formatCode, parseTotp, nextHotp } from '../core/totp.js';
 import { estimate } from '../core/strength.js';
 import { monogram, copy, menu, toast, confirm, showQr, sheet } from '../ui/components.js';

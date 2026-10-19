@@ -141,4 +141,13 @@ if (!g.includes('signingConfigs')) {
   log('Signature Haiku configurée (debug et release).');
 }
 
+// 7. Numéro de version (GitHub Actions : numéro de compilation)
+const build = process.env.HAIKU_BUILD;
+if (build && /^\d+$/.test(build)) {
+  g = readFileSync(gradlePath, 'utf8');
+  g = g.replace(/versionCode \d+/, `versionCode ${build}`).replace(/versionName "[^"]*"/, `versionName "1.${build}"`);
+  writeFileSync(gradlePath, g);
+  log(`Version 1.${build}.`);
+}
+
 log('OK.');

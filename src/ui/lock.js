@@ -1,7 +1,7 @@
 // Écran de verrouillage, création de coffre, mot de passe oublié, restauration.
 
 import { gsap, fx } from './fx.js';
-import { $, $$, on, el } from './dom.js';
+import { $, on } from './dom.js';
 import { icon } from './icons.js';
 import { esc } from '../core/util.js';
 import { prefs, vaultPrefs } from '../prefs.js';
@@ -39,7 +39,8 @@ export function renderLock(reason) {
   document.body.classList.add('locked');
   const vaults = session.list;
   if (!vaults.length) return renderWelcome(root);
-  if (!selected || !vaults.find((v) => v.id === selected)) selected = vaults.find((v) => v.id === prefs.s.lastVault)?.id || vaults[0].id;
+  if (reason === 'switch' || !selected || !vaults.find((v) => v.id === selected)) selected = vaults.find((v) => v.id === prefs.s.lastVault)?.id || selected || vaults[0].id;
+  if (!vaults.find((v) => v.id === selected)) selected = vaults[0].id;
   const vp = vaultPrefs.get(selected);
   const pinEnv = session.pinEnvelope(selected);
   mode = pinEnv ? 'pin' : 'password';

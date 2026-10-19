@@ -45,6 +45,8 @@ jobs:
           if [ ! -d android ]; then npx cap add android 2>&1 | tee /tmp/logs/cap-add.log; echo "NEW_ANDROID=1" >> $GITHUB_ENV; fi
 
       - name: Build web + synchronisation Android
+        env:
+          HAIKU_BUILD: ${{ github.run_number }}
         run: |
           set -o pipefail
           npm run sync 2>&1 | tee /tmp/logs/sync.log
