@@ -1,0 +1,146 @@
+
+> haiku@1.0.0 test
+> node --test tests/*.test.js
+
+TAP version 13
+# Subtest: Argon2id : même résultat que Python/cryptography (et donc que Keyra)
+ok 1 - Argon2id : même résultat que Python/cryptography (et donc que Keyra)
+  ---
+  duration_ms: 250.848036
+  type: 'test'
+  ...
+# Subtest: HKDF-Expand (étirement Bitwarden) : vecteur RFC 5869 cas 1
+ok 2 - HKDF-Expand (étirement Bitwarden) : vecteur RFC 5869 cas 1
+  ---
+  duration_ms: 4.62205
+  type: 'test'
+  ...
+# Subtest: gzip aller-retour
+ok 3 - gzip aller-retour
+  ---
+  duration_ms: 30.875466
+  type: 'test'
+  ...
+# Subtest: coffre : création, déverrouillage, mauvais mot de passe, persistance
+ok 4 - coffre : création, déverrouillage, mauvais mot de passe, persistance
+  ---
+  duration_ms: 27.358675
+  type: 'test'
+  ...
+# Subtest: clé de récupération : génération, saisie tolérante, mot de passe oublié
+ok 5 - clé de récupération : génération, saisie tolérante, mot de passe oublié
+  ---
+  duration_ms: 43.871609
+  type: 'test'
+  ...
+# Subtest: corbeille et purge
+ok 6 - corbeille et purge
+  ---
+  duration_ms: 7.614526
+  type: 'test'
+  ...
+# Subtest: import Keyra : export chiffré .mcfexport produit par Keyra
+ok 7 - import Keyra : export chiffré .mcfexport produit par Keyra
+  ---
+  duration_ms: 419.094244
+  type: 'test'
+  ...
+# Subtest: import Keyra CSV
+ok 8 - import Keyra CSV
+  ---
+  duration_ms: 1.96416
+  type: 'test'
+  ...
+# Subtest: import Bitwarden JSON + application au coffre (dossiers, doublons)
+ok 9 - import Bitwarden JSON + application au coffre (dossiers, doublons)
+  ---
+  duration_ms: 9.233768
+  type: 'test'
+  ...
+# Subtest: export Bitwarden protégé → réimport (aller-retour, types Haiku conservés)
+ok 10 - export Bitwarden protégé → réimport (aller-retour, types Haiku conservés)
+  ---
+  duration_ms: 310.446743
+  type: 'test'
+  ...
+# Subtest: Bitwarden EncString : chiffrement / déchiffrement / MAC
+ok 11 - Bitwarden EncString : chiffrement / déchiffrement / MAC
+  ---
+  duration_ms: 2.907757
+  type: 'test'
+  ...
+# Subtest: export Haiku chiffré → réimport complet
+ok 12 - export Haiku chiffré → réimport complet
+  ---
+  duration_ms: 430.089218
+  type: 'test'
+  ...
+# Subtest: export Keyra .mcfexport → relu par l'importeur Keyra de Haiku
+ok 13 - export Keyra .mcfexport → relu par l'importeur Keyra de Haiku
+  ---
+  duration_ms: 418.164366
+  type: 'test'
+  ...
+# Subtest: CSV : guillemets, retours à la ligne, détection des formats
+ok 14 - CSV : guillemets, retours à la ligne, détection des formats
+  ---
+  duration_ms: 0.781775
+  type: 'test'
+  ...
+# Subtest: TOTP : vecteurs RFC 6238 (SHA-1, 8 chiffres)
+ok 15 - TOTP : vecteurs RFC 6238 (SHA-1, 8 chiffres)
+  ---
+  duration_ms: 3.498324
+  type: 'test'
+  ...
+# Subtest: Google Authenticator : QR de transfert
+ok 16 - Google Authenticator : QR de transfert
+  ---
+  duration_ms: 0.908983
+  type: 'test'
+  ...
+# Subtest: générateur et robustesse
+ok 17 - générateur et robustesse
+  ---
+  duration_ms: 16.373754
+  type: 'test'
+  ...
+# Subtest: audit : réutilisés, faibles, sans mot de passe, http, cartes expirées
+ok 18 - audit : réutilisés, faibles, sans mot de passe, http, cartes expirées
+  ---
+  duration_ms: 11.658751
+  type: 'test'
+  ...
+# Subtest: recherche : texte libre, \#étiquette, filtres
+ok 19 - recherche : texte libre, \#étiquette, filtres
+  ---
+  duration_ms: 0.711272
+  type: 'test'
+  ...
+# Subtest: Send : page autonome
+ok 20 - Send : page autonome
+  ---
+  duration_ms: 98.120576
+  type: 'test'
+  ...
+# Subtest: remplissage automatique : correspondance des adresses (règles Bitwarden)
+ok 21 - remplissage automatique : correspondance des adresses (règles Bitwarden)
+  ---
+  duration_ms: 1.427915
+  type: 'test'
+  ...
+# Subtest: import Keyra : catégories intégrées rangées dans les dossiers de base
+ok 22 - import Keyra : catégories intégrées rangées dans les dossiers de base
+  ---
+  duration_ms: 214.507574
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2381.323926

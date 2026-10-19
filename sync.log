@@ -1,0 +1,73 @@
+
+> haiku@1.0.0 sync
+> vite build && cap sync android && node scripts/patch-android.mjs
+
+[36mvite v6.4.4 [32mbuilding for production...[36m[39m
+transforming...
+[32m✓[39m 89 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                          [39m[1m[2m  2.28 kB[22m[1m[22m[2m │ gzip:   1.01 kB[22m
+[2mdist/[22m[2massets/[22m[32mkdf.worker-CLXsUJjA.js       [39m[1m[2m 28.61 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mmanrope-ChJ5JMZ7.woff        [39m[1m[2m 29.70 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mspacegrotesk-BuMFJk9B.woff   [39m[1m[2m 33.43 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32moutfit--RC0OG8g.woff         [39m[1m[2m 41.53 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32msora-WEgFKUbh.woff           [39m[1m[2m 44.39 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mshippori-r5w7EfTi.woff       [39m[1m[2m 44.59 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32msyne-BwsNXggy.woff           [39m[1m[2m 46.44 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32mjetbrainsmono-5x1DBAhP.woff  [39m[1m[2m 49.79 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[32munbounded-CvIE6W5r.woff      [39m[1m[2m 82.27 kB[22m[1m[22m
+[2mdist/[22m[2massets/[22m[35mindex-D-TbfdzJ.css           [39m[1m[2m 62.83 kB[22m[1m[22m[2m │ gzip:  13.19 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-Bf7GpLHb.js            [39m[1m[2m  0.34 kB[22m[1m[22m[2m │ gzip:   0.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-s4HIGA79.js            [39m[1m[2m  0.35 kB[22m[1m[22m[2m │ gzip:   0.26 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-Dr-Qvzg2.js            [39m[1m[2m  0.36 kB[22m[1m[22m[2m │ gzip:   0.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mweb-BhE-AmqY.js              [39m[1m[2m  0.37 kB[22m[1m[22m[2m │ gzip:   0.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-COVKebwR.js            [39m[1m[2m  0.62 kB[22m[1m[22m[2m │ gzip:   0.41 kB[22m
+[2mdist/[22m[2massets/[22m[36mweb-BYSLVlYQ.js              [39m[1m[2m  0.85 kB[22m[1m[22m[2m │ gzip:   0.41 kB[22m
+[2mdist/[22m[2massets/[22m[36mweb-CU1msDKo.js              [39m[1m[2m  0.99 kB[22m[1m[22m[2m │ gzip:   0.50 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-BKXoOVPe.js            [39m[1m[2m  1.48 kB[22m[1m[22m[2m │ gzip:   0.76 kB[22m
+[2mdist/[22m[2massets/[22m[36mactivity-DC0Uk-25.js         [39m[1m[2m  1.81 kB[22m[1m[22m[2m │ gzip:   0.97 kB[22m
+[2mdist/[22m[2massets/[22m[36mtrash-0KsQtija.js            [39m[1m[2m  2.82 kB[22m[1m[22m[2m │ gzip:   1.31 kB[22m
+[2mdist/[22m[2massets/[22m[36maudit-Dey_lkuC.js            [39m[1m[2m  3.77 kB[22m[1m[22m[2m │ gzip:   1.87 kB[22m
+[2mdist/[22m[2massets/[22m[36mbackups-CGilyR6R.js          [39m[1m[2m  3.84 kB[22m[1m[22m[2m │ gzip:   1.87 kB[22m
+[2mdist/[22m[2massets/[22m[36mtotp-BqhXyjBb.js             [39m[1m[2m  4.29 kB[22m[1m[22m[2m │ gzip:   1.94 kB[22m
+[2mdist/[22m[2massets/[22m[36mmodules-Djuo18lT.js          [39m[1m[2m  4.65 kB[22m[1m[22m[2m │ gzip:   2.06 kB[22m
+[2mdist/[22m[2massets/[22m[36mfolders-CQaNdOEw.js          [39m[1m[2m  4.86 kB[22m[1m[22m[2m │ gzip:   2.17 kB[22m
+[2mdist/[22m[2massets/[22m[36mhealth-B-hm42wq.js           [39m[1m[2m  4.89 kB[22m[1m[22m[2m │ gzip:   2.29 kB[22m
+[2mdist/[22m[2massets/[22m[36mtotp-B_adfVr5.js             [39m[1m[2m  6.68 kB[22m[1m[22m[2m │ gzip:   3.12 kB[22m
+[2mdist/[22m[2massets/[22m[36mautofill-DVG3Kb0z.js         [39m[1m[2m  7.11 kB[22m[1m[22m[2m │ gzip:   3.03 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-1U05ovq-.js            [39m[1m[2m  8.45 kB[22m[1m[22m[2m │ gzip:   3.46 kB[22m
+[2mdist/[22m[2massets/[22m[36mhome-CzIqWcdN.js             [39m[1m[2m  8.77 kB[22m[1m[22m[2m │ gzip:   3.57 kB[22m
+[2mdist/[22m[2massets/[22m[36mweb-ZbTV0rMt.js              [39m[1m[2m  8.78 kB[22m[1m[22m[2m │ gzip:   3.00 kB[22m
+[2mdist/[22m[2massets/[22m[36mgen-CBYGXfnj.js              [39m[1m[2m  9.75 kB[22m[1m[22m[2m │ gzip:   3.63 kB[22m
+[2mdist/[22m[2massets/[22m[36msend-Cdh5cpC7.js             [39m[1m[2m  9.84 kB[22m[1m[22m[2m │ gzip:   4.60 kB[22m
+[2mdist/[22m[2massets/[22m[36mvault-Bk_CFEw_.js            [39m[1m[2m 10.20 kB[22m[1m[22m[2m │ gzip:   4.08 kB[22m
+[2mdist/[22m[2massets/[22m[36mstudio-CZho-_vg.js           [39m[1m[2m 10.56 kB[22m[1m[22m[2m │ gzip:   3.80 kB[22m
+[2mdist/[22m[2massets/[22m[36msettings-DLk-w_XJ.js         [39m[1m[2m 13.68 kB[22m[1m[22m[2m │ gzip:   5.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mitem-CLNK62ZD.js             [39m[1m[2m 18.01 kB[22m[1m[22m[2m │ gzip:   6.80 kB[22m
+[2mdist/[22m[2massets/[22m[36medit-BEVKDsTb.js             [39m[1m[2m 19.98 kB[22m[1m[22m[2m │ gzip:   6.90 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex.esm-c5goIuFU.js        [39m[1m[2m 28.25 kB[22m[1m[22m[2m │ gzip:  11.44 kB[22m
+[2mdist/[22m[2massets/[22m[36mtransfer-BYmB2Oks.js         [39m[1m[2m 38.99 kB[22m[1m[22m[2m │ gzip:  14.00 kB[22m
+[2mdist/[22m[2massets/[22m[36mfr-D832y_0-.js               [39m[1m[2m 60.20 kB[22m[1m[22m[2m │ gzip:  21.89 kB[22m
+[2mdist/[22m[2massets/[22m[36men-_HKScp8d.js               [39m[1m[2m 62.18 kB[22m[1m[22m[2m │ gzip:  24.80 kB[22m
+[2mdist/[22m[2massets/[22m[36mjsqr-BZ0I19bG.js             [39m[1m[2m130.28 kB[22m[1m[22m[2m │ gzip:  47.24 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-BzreLyIO.js            [39m[1m[2m358.67 kB[22m[1m[22m[2m │ gzip: 133.10 kB[22m
+[32m✓ built in 2.13s[39m
+✔ Copying web assets from dist to android/app/src/main/assets/public in 8.90ms
+✔ Creating capacitor.config.json in android/app/src/main/assets in 578.08μs
+✔ copy android in 19.06ms
+✔ Updating Android plugins in 1.51ms
+[info] Found 5 Capacitor plugins for android:
+       @capacitor/app@8.1.2
+       @capacitor/filesystem@8.1.5
+       @capacitor/haptics@8.0.2
+       @capacitor/share@8.0.3
+       @capacitor/status-bar@8.0.4
+✔ update android in 29.59ms
+[info] Sync finished in 0.068s
+[patch] MainActivity, plugin HaikuNative et icônes copiés.
+[patch] Manifest : service de remplissage automatique déclaré.
+[patch] Manifest : sauvegarde Android désactivée, clavier en adjustResize.
+[patch] Thèmes sombres appliqués.
+[patch] Version 1.4.
+[patch] OK.
